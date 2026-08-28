@@ -1,11 +1,11 @@
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import uvicorn
 
 app = FastAPI(title="Qwen 2.5 Proxy Gateway")
 
-# Enable CORS for web clients (local files, Render, GitHub Pages)
+# Enable CORS for web clients
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,31 +16,28 @@ app.add_middleware(
 
 OLLAMA_ENDPOINT = "http://127.0.0.1:11434/v1/chat/completions"
 
-# 1. GET Endpoint (Public access - API key removed)
-@app.get("/v1/chat/completions")
-async def chat_proxy_get(
-    prompt: str = Query(..., description="User prompt text"),
-    model: str = Query("qwen2.5:0.5b", description="Model name")
-):
-    try:
-        payload = {
-            "model": model,
-            "messages": [{"role": "user", "content": prompt}]
-        }
-        response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=300)
-        return response.json()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Proxy forwarding error: {str(e)}")
-
-# 2. POST Endpoint (Standard JSON requests)
+# POST Endpoint (Retrieves prompt/model from JSON request body)
 @app.post("/v1/chat/completions")
 async def chat_proxy_post(request: Request):
     try:
         body = await request.json()
-        if "model" not in body or not body["model"]:
-            body["model"] = "qwen2.5:0.5b"
 
-        response = requests.post(OLLAMA_ENDPOINT, json=body, timeout=300)
+        # Extract parameters from the JSON body
+        model = body.get("model", "qwen2.5:0.5b")
+        
+        # Accept either {"prompt": "..."} or standard OpenAI {"messages": [...]}
+        if "prompt" in body and "messages" not in body:
+            payload = {
+                "model": model,
+                "messages": [{"role": "user", "content": body["prompt"]}]
+            }
+        else:
+            payload = body
+            if "model" not in payload or not payload["model"]:
+                payload["model"] = "qwen2.5:0.5b"
+
+        # Forward request body to local Ollama instance
+        response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=300)
         return response.json()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Proxy forwarding error: {str(e)}")

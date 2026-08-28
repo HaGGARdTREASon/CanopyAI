@@ -32,13 +32,13 @@ h1 {
 }
 
 label {
-    display: block;
+    display .block;
     font-weight: 600;
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
 }
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"], textarea {
     width: 100%;
     box-sizing: border-box;
     background-color: #0f172a;
