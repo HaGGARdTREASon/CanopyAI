@@ -15,20 +15,19 @@ generateBtn.addEventListener('click', async () => {
 
   try {
     if (!generator) {
-      statusDiv.innerText = "Downloading model weights into browser (SmolLM2-360M)...";
+      statusDiv.innerText = "Downloading model weights into browser...";
       
-      // Official repo containing native browser-compatible ONNX weights
-      generator = await pipeline('text-generation', 'HuggingFaceTB/SmolLM2-360M-Instruct', {
+      // REQUIRED FIX: Added '-ONNX' to the repo name
+      generator = await pipeline('text-generation', 'onnx-community/SmolLM2-360M-Instruct-ONNX', {
         device: 'webgpu',
-        dtype: 'q4' // 4-bit quantization stabilizes WebGPU execution
+        dtype: 'q4'
       });
     }
 
-    statusDiv.innerText = "Generating response...";
+    statusDiv.innerText = "Generating text...";
     outputDiv.innerText = "";
 
-    const messages = [{ role: 'user', content: text }];
-    const result = await generator(messages, {
+    const result = await generator([{ role: 'user', content: text }], {
       max_new_tokens: 128,
       do_sample: true,
       temperature: 0.7,
@@ -36,8 +35,7 @@ generateBtn.addEventListener('click', async () => {
       repetition_penalty: 1.15
     });
 
-    const generated = result[0].generated_text;
-    outputDiv.innerText = Array.isArray(generated) ? generated.at(-1).content : generated;
+    outputDiv.innerText = result[0].generated_text.at(-1).content;
     statusDiv.innerText = "Done!";
   } catch (error) {
     statusDiv.innerText = `Error: ${error.message}`;
