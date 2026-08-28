@@ -1,6 +1,6 @@
 const API_URL = "https://832ca64ca28e2d.lhr.life/v1/chat/completions";
 const API_KEY = "sk-my-secret-key-12345";
-const MODEL_NAME = "gemma2:2b";
+const MODEL_NAME = "gemma4:e2b";
 
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
