@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Static AI Space</title>
-  <link rel="stylesheet" href="./style.css" />
+  <title>Hosted Gemma AI Space</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>WebGPU AI Generator</h1>
-    <p class="subtitle">Runs entirely in your browser using Transformers.js</p>
+    <h1>Gemma AI Generator</h1>
+    <p class="subtitle">Connected to local Gemma 2B via secure tunnel</p>
 
     <div class="input-group">
       <label for="prompt">Prompt:</label>
-      <textarea id="prompt" rows="4" placeholder="Ask anything..."></textarea>
+      <textarea id="prompt" rows="4" placeholder="Type a message or question..."></textarea>
     </div>
 
     <button id="generate-btn">Generate Response</button>
 
     <div class="output-group">
       <label>Status / Response:</label>
-      <div id="status" class="status-box">Ready. Click generate to load model.</div>
+      <div id="status" class="status-box">Ready.</div>
       <div id="output" class="output-box"></div>
     </div>
   </div>
 
-  <script type="module" src="./script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
