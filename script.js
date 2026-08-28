@@ -1,5 +1,5 @@
-// Updated default fallbacks
-const DEFAULT_API_URL = "https://832ca64ca28e2d.lhr.life/v1/chat/completions";
+// Default fallbacks targeting port 8000
+const DEFAULT_API_URL = "http://127.0.0.1:8000/v1/chat/completions"; // Change to your https://...lhr.life URL when accessing remotely
 const DEFAULT_API_KEY = "sk-my-secret-key-12345";
 const DEFAULT_MODEL = "gemma4:e2b";
 
@@ -11,7 +11,7 @@ const generateBtn = document.getElementById('generate-btn');
 const statusDiv = document.getElementById('status');
 const outputDiv = document.getElementById('output');
 
-// Pre-fill inputs with default configuration
+// Populate input fields with defaults
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (apiKeyInput) apiKeyInput.value = DEFAULT_API_KEY;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
@@ -25,7 +25,7 @@ generateBtn.addEventListener('click', async () => {
   if (!promptText) return;
 
   generateBtn.disabled = true;
-  statusDiv.innerText = "Sending request to hosted Gemma 4 model...";
+  statusDiv.innerText = "Forwarding prompt via 127.0.0.1:8000...";
   outputDiv.innerText = "";
 
   try {
@@ -53,7 +53,7 @@ generateBtn.addEventListener('click', async () => {
     statusDiv.innerText = "Response received!";
   } catch (error) {
     statusDiv.innerText = `Error: ${error.message}`;
-    console.error("API Request Failed:", error);
+    console.error("API Forwarding Failed:", error);
   } finally {
     generateBtn.disabled = false;
   }
