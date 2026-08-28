@@ -1,4 +1,4 @@
-// Pre-configured for local Qwen 2.5 (0.5B) model via Ollama
+// Pre-configured defaults
 const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
 const DEFAULT_API_KEY = "sk-my-secret-key-12345";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
@@ -13,36 +13,39 @@ const outputDiv = document.getElementById('output');
 const thinkingContainer = document.getElementById('thinking-container');
 const thinkingDiv = document.getElementById('thinking');
 
-// Pre-fill input fields with configuration details
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (apiKeyInput) apiKeyInput.value = DEFAULT_API_KEY;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
 
 generateBtn.addEventListener('click', async () => {
     const promptText = promptInput.value.trim();
-    const apiUrl = endpointInput.value.trim() || DEFAULT_API_URL;
+    const baseUrl = endpointInput.value.trim() || DEFAULT_API_URL;
     const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
     const modelName = modelInput.value.trim() || DEFAULT_MODEL;
 
     if (!promptText) return;
 
     generateBtn.disabled = true;
-    statusDiv.innerText = "Sending request to Qwen 2.5 model...";
+    statusDiv.innerText = "Sending GET request to Qwen 2.5 model...";
     outputDiv.innerText = "";
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
 
     try {
-        const response = await fetch(apiUrl, {
-            method: "POST",
+        // Construct GET URL with query parameters
+        const params = new URLSearchParams({
+            prompt: promptText,
+            model: modelName,
+            api_key: apiKey
+        });
+
+        const fullUrl = `${baseUrl}?${params.toString()}`;
+
+        const response = await fetch(fullUrl, {
+            method: "GET",
             headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: modelName,
-                messages: [{ role: "user", content: promptText }]
-            })
+                "Accept": "application/json"
+            }
         });
 
         if (!response.ok) {
@@ -51,12 +54,11 @@ generateBtn.addEventListener('click', async () => {
         }
 
         const data = await response.json();
-        const messageObj = data.choices[0]?.message || {};
+        const messageObj = data.choices?.[0]?.message || {};
 
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
-        // Extract reasoning/thinking tags if returned by the model
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
