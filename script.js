@@ -1,5 +1,5 @@
-// Default configuration targeting local Qwen 2.5
-const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
+// Configured with your live Ngrok public URL
+const DEFAULT_API_URL = "https://unsedimental-kayleen-nonpatriotically.ngrok-free.dev/v1/chat/completions";
 const DEFAULT_API_KEY = "sk-my-secret-key-12345";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
 
@@ -27,13 +27,13 @@ generateBtn.addEventListener('click', async () => {
     if (!promptText) return;
 
     generateBtn.disabled = true;
-    statusDiv.innerText = "Sending GET request to Qwen gateway...";
+    statusDiv.innerText = "Sending request to Qwen gateway...";
     outputDiv.innerText = "";
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
 
     try {
-        // Construct GET request URL with query parameters
+        // Construct GET URL with query parameters
         const params = new URLSearchParams({
             prompt: promptText,
             model: modelName,
@@ -45,7 +45,8 @@ generateBtn.addEventListener('click', async () => {
         const response = await fetch(fullUrl, {
             method: "GET",
             headers: {
-                "Accept": "application/json"
+                "Accept": "application/json",
+                "ngrok-skip-browser-warning": "true" // Bypasses ngrok warning page
             }
         });
 
@@ -69,7 +70,6 @@ generateBtn.addEventListener('click', async () => {
             }
         }
 
-        // Render thinking accordion if present
         if (thinkingText) {
             thinkingDiv.innerText = thinkingText;
             thinkingContainer.style.display = "block";

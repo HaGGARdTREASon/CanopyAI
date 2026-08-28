@@ -1,9 +1,12 @@
-# Local Qwen 2.5 Web Interface & GET/POST Proxy Gateway
+# Local Qwen 2.5 Web Interface & Public Ngrok Tunnel
 
-A local web client and FastAPI gateway proxy server configured for `qwen2.5:0.5b` via Ollama.
+A web client and FastAPI proxy server configured to run `qwen2.5:0.5b` locally via Ollama and exposed to the public internet via Ngrok.
 
-## Setup Instructions
+## Live Public GET Endpoint
+`https://unsedimental-kayleen-nonpatriotically.ngrok-free.dev/v1/chat/completions?prompt=Hello&api_key=sk-my-secret-key-12345`
 
-1. **Start Qwen 2.5 Engine**
+## Running locally
+
+1. **Start Ollama Engine**
    ```bash
    ollama run qwen2.5:0.5b
