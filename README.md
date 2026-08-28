@@ -1,5 +1,5 @@
 ---
-title: Static WebGPU AI Assistant
+title: In-Browser AI Assistant
 emoji: ⚡
 colorFrom: indigo
 colorTo: blue
@@ -8,6 +8,6 @@ app_file: index.html
 pinned: false
 ---
 
-# Static WebGPU AI App
+# In-Browser AI Assistant
 
-This Space runs AI model inference directly inside your web browser using WebGPU and Transformers.js.
+Runs SmolLM2-360M-Instruct locally in your browser using WebGPU and Transformers.js.
