@@ -1,30 +1,43 @@
-const API_URL = "https://832ca64ca28e2d.lhr.life/v1/chat/completions";
-const API_KEY = "sk-my-secret-key-12345";
-const MODEL_NAME = "gemma4:e2b";
+// Updated default fallbacks
+const DEFAULT_API_URL = "https://832ca64ca28e2d.lhr.life/v1/chat/completions";
+const DEFAULT_API_KEY = "sk-my-secret-key-12345";
+const DEFAULT_MODEL = "gemma4:e2b";
 
+const endpointInput = document.getElementById('api-url');
+const apiKeyInput = document.getElementById('api-key');
+const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
 const statusDiv = document.getElementById('status');
 const outputDiv = document.getElementById('output');
 
+// Pre-fill inputs with default configuration
+if (endpointInput) endpointInput.value = DEFAULT_API_URL;
+if (apiKeyInput) apiKeyInput.value = DEFAULT_API_KEY;
+if (modelInput) modelInput.value = DEFAULT_MODEL;
+
 generateBtn.addEventListener('click', async () => {
-  const text = promptInput.value.trim();
-  if (!text) return;
+  const promptText = promptInput.value.trim();
+  const apiUrl = endpointInput.value.trim() || DEFAULT_API_URL;
+  const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
+  const modelName = modelInput.value.trim() || DEFAULT_MODEL;
+
+  if (!promptText) return;
 
   generateBtn.disabled = true;
-  statusDiv.innerText = "Sending request to hosted Gemma model...";
+  statusDiv.innerText = "Sending request to hosted Gemma 4 model...";
   outputDiv.innerText = "";
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${API_KEY}`,
+        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: MODEL_NAME,
-        messages: [{ role: "user", content: text }]
+        model: modelName,
+        messages: [{ role: "user", content: promptText }]
       })
     });
 
@@ -40,7 +53,7 @@ generateBtn.addEventListener('click', async () => {
     statusDiv.innerText = "Response received!";
   } catch (error) {
     statusDiv.innerText = `Error: ${error.message}`;
-    console.error("API Call Failed:", error);
+    console.error("API Request Failed:", error);
   } finally {
     generateBtn.disabled = false;
   }
