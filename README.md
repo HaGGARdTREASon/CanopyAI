@@ -1,5 +1,5 @@
 ---
-title: In-Browser AI Assistant
+title: Hosted Gemma AI Assistant
 emoji: ⚡
 colorFrom: indigo
 colorTo: blue
@@ -8,6 +8,6 @@ app_file: index.html
 pinned: false
 ---
 
-# In-Browser AI Assistant
+# Gemma AI Web Interface
 
-Runs SmolLM2-360M-Instruct locally in your browser using WebGPU and Transformers.js.
+This app connects to a locally hosted Gemma model running on a remote PC via a secure API-key-protected SSH tunnel.
