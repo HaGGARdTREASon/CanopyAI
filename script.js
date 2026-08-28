@@ -1,5 +1,5 @@
-// Default fallbacks targeting port 8000
-const DEFAULT_API_URL = "http://127.0.0.1:8000/v1/chat/completions"; // Change to your https://...lhr.life URL when accessing remotely
+// Default fallbacks targeting localhost:8000
+const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
 const DEFAULT_API_KEY = "sk-my-secret-key-12345";
 const DEFAULT_MODEL = "gemma4:e2b";
 
@@ -11,50 +11,50 @@ const generateBtn = document.getElementById('generate-btn');
 const statusDiv = document.getElementById('status');
 const outputDiv = document.getElementById('output');
 
-// Populate input fields with defaults
+// Pre-fill input fields with default configuration values
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (apiKeyInput) apiKeyInput.value = DEFAULT_API_KEY;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
 
 generateBtn.addEventListener('click', async () => {
-  const promptText = promptInput.value.trim();
-  const apiUrl = endpointInput.value.trim() || DEFAULT_API_URL;
-  const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
-  const modelName = modelInput.value.trim() || DEFAULT_MODEL;
+    const promptText = promptInput.value.trim();
+    const apiUrl = endpointInput.value.trim() || DEFAULT_API_URL;
+    const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
+    const modelName = modelInput.value.trim() || DEFAULT_MODEL;
 
-  if (!promptText) return;
+    if (!promptText) return;
 
-  generateBtn.disabled = true;
-  statusDiv.innerText = "Forwarding prompt via 127.0.0.1:8000...";
-  outputDiv.innerText = "";
+    generateBtn.disabled = true;
+    statusDiv.innerText = "Sending request to localhost:8000...";
+    outputDiv.innerText = "";
 
-  try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: modelName,
-        messages: [{ role: "user", content: promptText }]
-      })
-    });
+    try {
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: modelName,
+                messages: [{ role: "user", content: promptText }]
+            })
+        });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(errorData?.detail || `HTTP Error ${response.status}`);
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.detail || `HTTP Error ${response.status}`);
+        }
+
+        const data = await response.json();
+        const reply = data.choices[0].message.content;
+
+        outputDiv.innerText = reply;
+        statusDiv.innerText = "Response received!";
+    } catch (error) {
+        statusDiv.innerText = `Error: ${error.message}`;
+        console.error("API Request Failed:", error);
+    } finally {
+        generateBtn.disabled = false;
     }
-
-    const data = await response.json();
-    const reply = data.choices[0].message.content;
-
-    outputDiv.innerText = reply;
-    statusDiv.innerText = "Response received!";
-  } catch (error) {
-    statusDiv.innerText = `Error: ${error.message}`;
-    console.error("API Forwarding Failed:", error);
-  } finally {
-    generateBtn.disabled = false;
-  }
 });

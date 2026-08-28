@@ -1,13 +1,9 @@
----
-title: Hosted Gemma AI Assistant
-emoji: ⚡
-colorFrom: indigo
-colorTo: blue
-sdk: static
-app_file: index.html
-pinned: false
----
+# Local Gemma 4 Web Client & Proxy Server
 
-# Gemma AI Web Interface
+A lightweight web application and proxy server configured to run `gemma4:e2b` using Ollama, protected by a Bearer API Key gateway.
 
-This app connects to a locally hosted Gemma model running on a remote PC via a secure API-key-protected SSH tunnel.
+## Setup Instructions
+
+1. **Start Ollama Engine**
+   ```bash
+   ollama run gemma4:e2b
