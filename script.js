@@ -10,6 +10,8 @@ const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
 const statusDiv = document.getElementById('status');
 const outputDiv = document.getElementById('output');
+const thinkingContainer = document.getElementById('thinking-container');
+const thinkingDiv = document.getElementById('thinking');
 
 // Pre-fill input fields with default configuration values
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
@@ -25,8 +27,10 @@ generateBtn.addEventListener('click', async () => {
     if (!promptText) return;
 
     generateBtn.disabled = true;
-    statusDiv.innerText = "Sending request to localhost:8000...";
+    statusDiv.innerText = "Sending request to server...";
     outputDiv.innerText = "";
+    thinkingDiv.innerText = "";
+    thinkingContainer.style.display = "none";
 
     try {
         const response = await fetch(apiUrl, {
@@ -47,9 +51,27 @@ generateBtn.addEventListener('click', async () => {
         }
 
         const data = await response.json();
-        const reply = data.choices[0].message.content;
+        const messageObj = data.choices[0]?.message || {};
 
-        outputDiv.innerText = reply;
+        let rawContent = messageObj.content || "";
+        let thinkingText = messageObj.reasoning_content || "";
+
+        // Extract <think>...</think> or <thought>...</thought> tags embedded in output content
+        if (!thinkingText) {
+            const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
+            if (thinkMatch) {
+                thinkingText = thinkMatch[2].trim();
+                rawContent = rawContent.replace(/<(think|thought)>([\s\S]*?)<\/\1>/i, '').trim();
+            }
+        }
+
+        // Render thinking process if detected
+        if (thinkingText) {
+            thinkingDiv.innerText = thinkingText;
+            thinkingContainer.style.display = "block";
+        }
+
+        outputDiv.innerText = rawContent;
         statusDiv.innerText = "Response received!";
     } catch (error) {
         statusDiv.innerText = `Error: ${error.message}`;
