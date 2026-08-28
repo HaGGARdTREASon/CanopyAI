@@ -3,13 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hosted Gemma AI Space</title>
+  <title>Hosted Gemma 4 AI Space</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Gemma AI Generator</h1>
-    <p class="subtitle">Connected to local Gemma 2B via secure tunnel</p>
+    <h1>Gemma 4 AI Generator</h1>
+    <p class="subtitle">Connected to local Gemma 4 (E2B) via public tunnel</p>
+
+    <div class="input-group">
+      <label for="api-url">API Endpoint URL:</label>
+      <input type="text" id="api-url" placeholder="https://832ca64ca28e2d.lhr.life/v1/chat/completions" />
+    </div>
+
+    <div class="input-group">
+      <label for="api-key">API Key:</label>
+      <input type="password" id="api-key" placeholder="sk-my-secret-key-12345" />
+    </div>
+
+    <div class="input-group">
+      <label for="model-name">Model Name:</label>
+      <input type="text" id="model-name" placeholder="gemma4:e2b" />
+    </div>
 
     <div class="input-group">
       <label for="prompt">Prompt:</label>
