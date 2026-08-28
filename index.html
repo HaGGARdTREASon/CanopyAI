@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Local AI Assistant Interface</title>
+    <title>Qwen 2.5 AI Assistant Interface</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container">
-        <h1>Gemma 4 AI Assistant</h1>
-        <p class="subtitle">Connected to Jash's AI</p>
+        <h1>Qwen 2.5 AI Assistant</h1>
+        <p class="subtitle">Connected to local Qwen 2.5 (0.5B) via Ollama</p>
 
         <div class="input-group">
             <label for="api-url">API Endpoint URL:</label>
@@ -37,7 +37,6 @@
             <label>Status / Response:</label>
             <div id="status" class="status-box">Ready.</div>
 
-            <!-- Collapsible thinking process box -->
             <details id="thinking-container" class="thinking-box" style="display: none;" open>
                 <summary>🧠 Thinking Process</summary>
                 <div id="thinking" class="thinking-content"></div>
