@@ -1,6 +1,6 @@
-import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.3';
-
-let generator = null;
+const API_URL = "https://832ca64ca28e2d.lhr.life/v1/chat/completions";
+const API_KEY = "sk-my-secret-key-12345";
+const MODEL_NAME = "gemma2:2b";
 
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
@@ -12,34 +12,35 @@ generateBtn.addEventListener('click', async () => {
   if (!text) return;
 
   generateBtn.disabled = true;
+  statusDiv.innerText = "Sending request to hosted Gemma model...";
+  outputDiv.innerText = "";
 
   try {
-    if (!generator) {
-      statusDiv.innerText = "Downloading model weights into browser...";
-      
-      // REQUIRED FIX: Added '-ONNX' to the repo name
-      generator = await pipeline('text-generation', 'onnx-community/SmolLM2-360M-Instruct-ONNX', {
-        device: 'webgpu',
-        dtype: 'q4'
-      });
-    }
-
-    statusDiv.innerText = "Generating text...";
-    outputDiv.innerText = "";
-
-    const result = await generator([{ role: 'user', content: text }], {
-      max_new_tokens: 128,
-      do_sample: true,
-      temperature: 0.7,
-      top_p: 0.9,
-      repetition_penalty: 1.15
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: MODEL_NAME,
+        messages: [{ role: "user", content: text }]
+      })
     });
 
-    outputDiv.innerText = result[0].generated_text.at(-1).content;
-    statusDiv.innerText = "Done!";
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.detail || `HTTP Error ${response.status}`);
+    }
+
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
+
+    outputDiv.innerText = reply;
+    statusDiv.innerText = "Response received!";
   } catch (error) {
     statusDiv.innerText = `Error: ${error.message}`;
-    console.error(error);
+    console.error("API Call Failed:", error);
   } finally {
     generateBtn.disabled = false;
   }
