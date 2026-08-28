@@ -1,10 +1,8 @@
 // Configured with your live Ngrok public URL
 const DEFAULT_API_URL = "https://unsedimental-kayleen-nonpatriotically.ngrok-free.dev/v1/chat/completions";
-const DEFAULT_API_KEY = "sk-my-secret-key-12345";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
 
 const endpointInput = document.getElementById('api-url');
-const apiKeyInput = document.getElementById('api-key');
 const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
@@ -15,13 +13,11 @@ const thinkingDiv = document.getElementById('thinking');
 
 // Pre-fill input fields on page load
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
-if (apiKeyInput) apiKeyInput.value = DEFAULT_API_KEY;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
 
 generateBtn.addEventListener('click', async () => {
     const promptText = promptInput.value.trim();
     const baseUrl = endpointInput.value.trim() || DEFAULT_API_URL;
-    const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
     const modelName = modelInput.value.trim() || DEFAULT_MODEL;
 
     if (!promptText) return;
@@ -33,11 +29,10 @@ generateBtn.addEventListener('click', async () => {
     thinkingContainer.style.display = "none";
 
     try {
-        // Construct GET URL with query parameters
+        // Construct GET URL with query parameters (no API key required)
         const params = new URLSearchParams({
             prompt: promptText,
-            model: modelName,
-            api_key: apiKey
+            model: modelName
         });
 
         const fullUrl = `${baseUrl}?${params.toString()}`;
