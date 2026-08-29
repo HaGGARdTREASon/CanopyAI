@@ -1,4 +1,20 @@
-/* Base Reset */
+:root {
+    --font-main: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    --bg-dark: #121622;
+    --clay-card-bg: #1c2232;
+    --clay-inset-bg: #151926;
+    --accent-blue: #38bdf8;
+    --accent-indigo: #6366f1;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    /* Claymorphic Dual Shadows */
+    --clay-outer-shadow: 18px 18px 36px #0b0e16, -18px -18px 36px #2d364e;
+    --clay-inner-light: inset 5px 5px 10px rgba(255, 255, 255, 0.08);
+    --clay-inner-dark: inset -6px -6px 12px rgba(0, 0, 0, 0.45);
+    --inset-shadow: inset 6px 6px 12px #0c0f18, inset -6px -6px 12px #1e2436;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,188 +22,336 @@
 }
 
 body {
-    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-    background-color: #1e2230;
-    color: #f1f5f9;
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 2rem;
+    padding: 1.5rem;
     position: relative;
     overflow-x: hidden;
 }
 
-/* 1. Ambient Background Blobs (Enhances Clay Depth) */
-.clay-blob {
+/* 1. Animated Ambient Background Orbs */
+.background-orbs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(50px);
-    z-index: 0;
-    opacity: 0.5;
+    filter: blur(70px);
+    opacity: 0.45;
+    animation: float 12s infinite alternate ease-in-out;
 }
 
-.blob-1 {
-    width: 300px;
-    height: 300px;
+.orb-1 {
+    width: 380px;
+    height: 380px;
     background: #0284c7;
-    top: 8%;
-    left: 12%;
+    top: -50px;
+    left: 10%;
 }
 
-.blob-2 {
-    width: 350px;
-    height: 350px;
-    background: #7c3aed;
-    bottom: 8%;
-    right: 12%;
+.orb-2 {
+    width: 420px;
+    height: 420px;
+    background: #4f46e5;
+    bottom: -60px;
+    right: 10%;
+    animation-delay: -5s;
 }
 
-/* 2. Main Claymorphic Floating Card */
+.orb-3 {
+    width: 250px;
+    height: 250px;
+    background: #06b6d4;
+    top: 40%;
+    right: 30%;
+    animation-delay: -8s;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(30px, 40px) scale(1.08);
+    }
+}
+
+/* 2. Main Claymorphic Floating Container */
 .clay-card {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 640px;
-    background: #252b3b;
-    padding: 2.5rem;
-    border-radius: 35px;
-    box-shadow: 20px 20px 40px #141722, -20px -20px 40px #363f54, inset 8px 8px 16px rgba(255, 255, 255, 0.08), inset -8px -8px 16px rgba(0, 0, 0, 0.45);
+    max-width: 680px;
+    background: var(--clay-card-bg);
+    padding: 2.25rem;
+    border-radius: 36px;
+    box-shadow: var(--clay-outer-shadow), var(--clay-inner-light), var(--clay-inner-dark);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.header h1 {
-    color: #38bdf8;
-    font-size: 1.85rem;
+/* Header Section */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,255,255,0.4);
+}
+
+h1 {
+    font-size: 1.45rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 0.3rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
-    color: #94a3b8;
-    font-size: 0.92rem;
-    margin-bottom: 1.8rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
-.input-group, .output-group {
-    margin-bottom: 1.4rem;
+.version-badge {
+    background: var(--clay-inset-bg);
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    box-shadow: var(--inset-shadow);
+}
+
+/* Form Inputs Grid */
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+}
+
+@media (max-width: 580px) {
+    .config-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input-group {
+    margin-bottom: 1.2rem;
 }
 
 label {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     font-weight: 700;
-    font-size: 0.9rem;
-    color: #cbd5e1;
-    margin-bottom: 0.6rem;
-    letter-spacing: 0.3px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-/* 3. Inset Clay Inputs */
+    label svg {
+        color: var(--accent-blue);
+    }
+
+/* Inset Clay Input Elements */
 .clay-input {
     width: 100%;
-    background-color: #1b202e;
+    background-color: var(--clay-inset-bg);
     border: none;
-    color: #f8fafc;
-    padding: 0.95rem 1.2rem;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    outline: none;
+    color: var(--text-primary);
+    padding: 0.9rem 1.1rem;
+    border-radius: 18px;
+    font-size: 0.92rem;
     font-family: inherit;
-    box-shadow: inset 6px 6px 12px #10131c, inset -6px -6px 12px #262d40;
+    outline: none;
+    box-shadow: var(--inset-shadow);
     transition: all 0.2s ease;
 }
 
     .clay-input:focus {
-        box-shadow: inset 8px 8px 14px #0c0e15, inset -8px -8px 14px #2a3247, 0 0 0 2px rgba(56, 189, 248, 0.4);
+        box-shadow: inset 8px 8px 14px #080a10, inset -8px -8px 14px #22293e, 0 0 0 2px rgba(56, 189, 248, 0.35);
     }
 
 .clay-textarea {
     resize: vertical;
     min-height: 100px;
+    line-height: 1.5;
 }
 
-/* 4. Claymorphic Tactile Button */
+/* 3. Claymorphic Primary Button */
 .clay-btn {
     width: 100%;
-    background: linear-gradient(145deg, #0284c7, #0369a1);
+    background: linear-gradient(135deg, #0284c7, #4f46e5);
     color: #ffffff;
     border: none;
-    padding: 1.1rem;
-    font-size: 1.05rem;
+    padding: 1.05rem;
+    font-size: 0.98rem;
     font-weight: 700;
-    border-radius: 25px;
+    font-family: inherit;
+    border-radius: 22px;
     cursor: pointer;
-    box-shadow: 10px 10px 20px #141722, -10px -10px 20px #363f54, inset 4px 4px 8px rgba(255, 255, 255, 0.4), inset -4px -4px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 8px 8px 18px #0d1019, -8px -8px 18px #2b344b, inset 3px 3px 6px rgba(255, 255, 255, 0.35), inset -3px -3px 6px rgba(0, 0, 0, 0.4);
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
 }
 
     .clay-btn:hover {
-        transform: translateY(-3px) scale(1.01);
-        box-shadow: 14px 14px 25px #12151f, -14px -14px 25px #384259, inset 5px 5px 10px rgba(255, 255, 255, 0.5), inset -5px -5px 10px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 12px 12px 22px #0a0c13, -12px -12px 22px #2e3851, inset 4px 4px 8px rgba(255, 255, 255, 0.45), inset -4px -4px 8px rgba(0, 0, 0, 0.4);
     }
 
     .clay-btn:active {
-        transform: translateY(2px) scale(0.99);
-        box-shadow: inset 6px 6px 12px #01446b, inset -6px -6px 12px #058ed8;
+        transform: translateY(2px);
+        box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6), inset -2px -2px 4px rgba(255, 255, 255, 0.2);
     }
 
     .clay-btn:disabled {
-        background: #475569;
-        box-shadow: inset 4px 4px 8px #334155, inset -4px -4px 8px #52657d;
+        background: #334155;
+        box-shadow: var(--inset-shadow);
+        color: var(--text-muted);
         cursor: not-allowed;
         transform: none;
     }
 
-/* 5. Inset Clay Display Cards */
-.status-badge {
-    display: inline-block;
-    font-size: 0.85rem;
+/* 4. Output & Response Styling */
+.output-group {
+    margin-top: 1.6rem;
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--clay-inset-bg);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
     font-weight: 600;
-    color: #38bdf8;
-    padding: 0.4rem 1rem;
-    border-radius: 15px;
-    margin-bottom: 0.8rem;
-    background: #1b202e;
-    box-shadow: inset 3px 3px 6px #10131c, inset -3px -3px 6px #262d40;
+    color: var(--accent-blue);
+    box-shadow: var(--inset-shadow);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    background-color: var(--accent-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-blue);
 }
 
 .clay-inset {
-    background-color: #1b202e;
+    background-color: var(--clay-inset-bg);
     border-radius: 22px;
     padding: 1.2rem;
-    box-shadow: inset 6px 6px 12px #10131c, inset -6px -6px 12px #262d40;
+    box-shadow: var(--inset-shadow);
 }
 
+/* Thinking Box Accordion */
 .thinking-box {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
 }
 
     .thinking-box summary {
         cursor: pointer;
         font-weight: 700;
-        color: #38bdf8;
-        font-size: 0.9rem;
+        color: var(--accent-blue);
+        font-size: 0.85rem;
         user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        list-style: none;
     }
+
+        .thinking-box summary::-webkit-details-marker {
+            display: none;
+        }
+
+.summary-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.chevron {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+details[open] .chevron {
+    transform: rotate(180deg);
+}
 
 .thinking-content {
     margin-top: 0.8rem;
-    color: #94a3b8;
-    font-size: 0.88rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
     white-space: pre-wrap;
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-family: ui-monospace, Consolas, monospace;
     line-height: 1.5;
-    max-height: 220px;
+    max-height: 200px;
     overflow-y: auto;
+    padding-right: 0.4rem;
 }
 
+    /* Custom Scrollbar for Inner Insets */
+    .thinking-content::-webkit-scrollbar,
+    .output-box::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .thinking-content::-webkit-scrollbar-thumb,
+    .output-box::-webkit-scrollbar-thumb {
+        background: var(--clay-card-bg);
+        border-radius: 10px;
+    }
+
 .output-box {
-    min-height: 100px;
+    min-height: 110px;
     white-space: pre-wrap;
-    color: #f1f5f9;
+    color: var(--text-primary);
     line-height: 1.6;
-    font-size: 0.98rem;
+    font-size: 0.95rem;
 }
