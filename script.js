@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = "https://unsedimental-kayleen-nonpatriotically.ngrok-free.dev/v1/chat/completions";
+const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
 
 const endpointInput = document.getElementById('api-url');
@@ -21,7 +21,7 @@ generateBtn.addEventListener('click', async () => {
     if (!promptText) return;
 
     generateBtn.disabled = true;
-    statusDiv.innerText = "Sending POST request to Qwen gateway...";
+    statusDiv.innerText = "Sending POST request to Local Qwen Gateway...";
     outputDiv.innerText = "";
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
@@ -30,8 +30,7 @@ generateBtn.addEventListener('click', async () => {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 prompt: promptText,

@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import requests
 import uvicorn
 
-app = FastAPI(title="Qwen 2.5 Proxy Gateway")
+OLLAMA_ENDPOINT = "http://127.0.0.1:11434/v1/chat/completions"
+
+app = FastAPI(title="Qwen 2.5 Local Gateway")
 
 # Enable CORS for web clients
 app.add_middleware(
@@ -14,18 +16,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-OLLAMA_ENDPOINT = "http://127.0.0.1:11434/v1/chat/completions"
-
-# POST Endpoint (Retrieves prompt/model from JSON request body)
 @app.post("/v1/chat/completions")
 async def chat_proxy_post(request: Request):
     try:
         body = await request.json()
-
-        # Extract parameters from the JSON body
         model = body.get("model", "qwen2.5:0.5b")
-        
-        # Accept either {"prompt": "..."} or standard OpenAI {"messages": [...]}
+
         if "prompt" in body and "messages" not in body:
             payload = {
                 "model": model,
@@ -36,11 +32,15 @@ async def chat_proxy_post(request: Request):
             if "model" not in payload or not payload["model"]:
                 payload["model"] = "qwen2.5:0.5b"
 
-        # Forward request body to local Ollama instance
+        # Forward request to local Ollama service
         response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=300)
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail=response.json())
+
         return response.json()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Proxy forwarding error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Local Proxy Error: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
