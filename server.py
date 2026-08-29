@@ -19,38 +19,26 @@ app.add_middleware(
 async def chat_proxy_post(request: Request):
     try:
         body = await request.json()
-        model = body.get("model") or "qwen2.5:0.5b"
+        model = body.get("model", "qwen2.5:0.5b")
 
-        # Explicitly set stream=False to prevent JSONDecodeError from Ollama SSE streams
         if "prompt" in body and "messages" not in body:
             payload = {
                 "model": model,
-                "messages": [{"role": "user", "content": body["prompt"]}],
-                "stream": False
+                "messages": [{"role": "user", "content": body["prompt"]}]
             }
         else:
             payload = body
-            payload["model"] = model
-            payload["stream"] = False
+            if "model" not in payload or not payload["model"]:
+                payload["model"] = "qwen2.5:0.5b"
 
-        # Forward request to local Ollama instance
         response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=300)
         
         if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code, 
-                detail=f"Ollama Error ({response.status_code}): {response.text}"
-            )
+            raise HTTPException(status_code=response.status_code, detail=response.json())
 
         return response.json()
-
-    except requests.exceptions.ConnectionError:
-        raise HTTPException(
-            status_code=503, 
-            detail="Cannot connect to Ollama at http://127.0.0.1:11434. Ensure Ollama is running (`ollama serve`)."
-        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gateway Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Local Gateway Error: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
