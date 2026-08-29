@@ -1,7 +1,6 @@
 const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
 
-const themeToggleBtn = document.getElementById('theme-toggle');
 const endpointInput = document.getElementById('api-url');
 const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
@@ -10,21 +9,6 @@ const statusText = document.getElementById('status-text');
 const outputDiv = document.getElementById('output');
 const thinkingContainer = document.getElementById('thinking-container');
 const thinkingDiv = document.getElementById('thinking');
-
-// Theme Toggle Logic & Local Storage Persistence
-const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-if (savedTheme === 'light') {
-    document.documentElement.setAttribute('data-theme', 'light');
-}
-
-if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('theme', nextTheme);
-    });
-}
 
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
@@ -47,6 +31,7 @@ generateBtn.addEventListener('click', async () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                // Essential header to bypass Ngrok's HTML warning page when shared publicly
                 "ngrok-skip-browser-warning": "true"
             },
             body: JSON.stringify({
@@ -66,6 +51,7 @@ generateBtn.addEventListener('click', async () => {
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
+        // Fallback parser for <think> tags if model embeds reasoning directly in content
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
