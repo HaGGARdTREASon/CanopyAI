@@ -5,7 +5,7 @@ const endpointInput = document.getElementById('api-url');
 const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
-const statusDiv = document.getElementById('status');
+const statusText = document.getElementById('status-text');
 const outputDiv = document.getElementById('output');
 const thinkingContainer = document.getElementById('thinking-container');
 const thinkingDiv = document.getElementById('thinking');
@@ -21,7 +21,7 @@ generateBtn.addEventListener('click', async () => {
     if (!promptText) return;
 
     generateBtn.disabled = true;
-    statusDiv.innerText = "Sending POST request to Local Qwen Gateway...";
+    statusText.innerText = "Processing...";
     outputDiv.innerText = "";
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
@@ -30,7 +30,9 @@ generateBtn.addEventListener('click', async () => {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                // Essential header to bypass Ngrok's HTML warning page when shared publicly
+                "ngrok-skip-browser-warning": "true"
             },
             body: JSON.stringify({
                 prompt: promptText,
@@ -49,6 +51,7 @@ generateBtn.addEventListener('click', async () => {
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
+        // Fallback parser for <think> tags if model embeds reasoning directly in content
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
@@ -63,9 +66,10 @@ generateBtn.addEventListener('click', async () => {
         }
 
         outputDiv.innerText = rawContent;
-        statusDiv.innerText = "Response received!";
+        statusText.innerText = "Completed";
     } catch (error) {
-        statusDiv.innerText = `Error: ${error.message}`;
+        statusText.innerText = "Error";
+        outputDiv.innerText = `Request Failed: ${error.message}`;
         console.error("API Request Failed:", error);
     } finally {
         generateBtn.disabled = false;

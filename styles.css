@@ -8,7 +8,6 @@
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
-    /* Claymorphic Dual Shadows */
     --clay-outer-shadow: 18px 18px 36px #0b0e16, -18px -18px 36px #2d364e;
     --clay-inner-light: inset 5px 5px 10px rgba(255, 255, 255, 0.08);
     --clay-inner-dark: inset -6px -6px 12px rgba(0, 0, 0, 0.45);
@@ -34,7 +33,7 @@ body {
     overflow-x: hidden;
 }
 
-/* 1. Animated Ambient Background Orbs */
+/* Ambient Background Orbs */
 .background-orbs {
     position: absolute;
     width: 100%;
@@ -88,7 +87,7 @@ body {
     }
 }
 
-/* 2. Main Claymorphic Floating Container */
+/* Card Container */
 .clay-card {
     position: relative;
     z-index: 1;
@@ -102,7 +101,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-/* Header Section */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -131,7 +129,6 @@ body {
 h1 {
     font-size: 1.45rem;
     font-weight: 800;
-    color: var(--text-primary);
     letter-spacing: -0.02em;
 }
 
@@ -151,7 +148,6 @@ h1 {
     box-shadow: var(--inset-shadow);
 }
 
-/* Form Inputs Grid */
 .config-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -184,7 +180,6 @@ label {
         color: var(--accent-blue);
     }
 
-/* Inset Clay Input Elements */
 .clay-input {
     width: 100%;
     background-color: var(--clay-inset-bg);
@@ -209,7 +204,6 @@ label {
     line-height: 1.5;
 }
 
-/* 3. Claymorphic Primary Button */
 .clay-btn {
     width: 100%;
     background: linear-gradient(135deg, #0284c7, #4f46e5);
@@ -248,7 +242,6 @@ label {
         transform: none;
     }
 
-/* 4. Output & Response Styling */
 .output-group {
     margin-top: 1.6rem;
 }
@@ -288,7 +281,6 @@ label {
     box-shadow: var(--inset-shadow);
 }
 
-/* Thinking Box Accordion */
 .thinking-box {
     margin-bottom: 1rem;
 }
@@ -333,20 +325,7 @@ details[open] .chevron {
     line-height: 1.5;
     max-height: 200px;
     overflow-y: auto;
-    padding-right: 0.4rem;
 }
-
-    /* Custom Scrollbar for Inner Insets */
-    .thinking-content::-webkit-scrollbar,
-    .output-box::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .thinking-content::-webkit-scrollbar-thumb,
-    .output-box::-webkit-scrollbar-thumb {
-        background: var(--clay-card-bg);
-        border-radius: 10px;
-    }
 
 .output-box {
     min-height: 110px;
