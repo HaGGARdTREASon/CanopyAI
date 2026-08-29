@@ -5,13 +5,48 @@ const endpointInput = document.getElementById('api-url');
 const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
+const btnText = document.getElementById('btn-text');
+const btnIcon = document.getElementById('btn-icon');
 const statusText = document.getElementById('status-text');
+const statusDot = document.getElementById('status-dot');
 const outputDiv = document.getElementById('output');
 const thinkingContainer = document.getElementById('thinking-container');
 const thinkingDiv = document.getElementById('thinking');
 
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
+
+/**
+ * Live Typewriter Animation Engine
+ */
+async function typeText(targetElement, fullText, speedMs = 12) {
+    targetElement.innerHTML = "";
+    
+    // Create cursor element
+    const cursor = document.createElement("span");
+    cursor.className = "typing-cursor";
+    targetElement.appendChild(cursor);
+
+    for (let i = 0; i < fullText.length; i++) {
+        // Insert character before blinking cursor
+        cursor.insertAdjacentText("beforebegin", fullText[i]);
+        
+        // Auto-scroll target element down smoothly
+        targetElement.scrollTop = targetElement.scrollHeight;
+        
+        // Slight variable delay for realistic typing feel
+        const char = fullText[i];
+        let delay = speedMs;
+        if (char === '.' || char === '?' || char === '!') delay = speedMs * 4;
+        else if (char === ',' || char === '\n') delay = speedMs * 2.5;
+
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+
+    // Keep cursor blinking briefly at the end then remove
+    await new Promise(resolve => setTimeout(resolve, 800));
+    cursor.remove();
+}
 
 generateBtn.addEventListener('click', async () => {
     const promptText = promptInput.value.trim();
@@ -20,9 +55,15 @@ generateBtn.addEventListener('click', async () => {
 
     if (!promptText) return;
 
+    // Set UI to loading state
     generateBtn.disabled = true;
-    statusText.innerText = "Processing...";
-    outputDiv.innerText = "";
+    btnText.innerText = "Generating...";
+    btnIcon.classList.add("spin-icon");
+    
+    statusText.innerText = "Thinking...";
+    statusDot.classList.add("active");
+    
+    outputDiv.innerHTML = `<span class="placeholder-text">Connecting to gateway...</span>`;
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
 
@@ -50,6 +91,7 @@ generateBtn.addEventListener('click', async () => {
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
+        // Fallback reasoning tag extractor
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
@@ -63,13 +105,19 @@ generateBtn.addEventListener('click', async () => {
             thinkingContainer.style.display = "block";
         }
 
-        outputDiv.innerText = rawContent;
+        // Trigger Live Generation Animation
+        statusText.innerText = "Generating Live Response...";
+        await typeText(outputDiv, rawContent, 10);
+
         statusText.innerText = "Completed";
     } catch (error) {
         statusText.innerText = "Error";
-        outputDiv.innerText = `Request Failed: ${error.message}`;
+        outputDiv.innerHTML = `<span style="color: #ef4444; font-weight: 600;">Request Failed: ${error.message}</span>`;
         console.error("API Request Failed:", error);
     } finally {
         generateBtn.disabled = false;
+        btnText.innerText = "Generate Response";
+        btnIcon.classList.remove("spin-icon");
+        statusDot.classList.remove("active");
     }
 });
