@@ -31,7 +31,6 @@ generateBtn.addEventListener('click', async () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // Essential header to bypass Ngrok's HTML warning page when shared publicly
                 "ngrok-skip-browser-warning": "true"
             },
             body: JSON.stringify({
@@ -51,7 +50,6 @@ generateBtn.addEventListener('click', async () => {
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
-        // Fallback parser for <think> tags if model embeds reasoning directly in content
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
