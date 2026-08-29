@@ -5,7 +5,10 @@ const endpointInput = document.getElementById('api-url');
 const modelInput = document.getElementById('model-name');
 const promptInput = document.getElementById('prompt');
 const generateBtn = document.getElementById('generate-btn');
+const btnText = document.getElementById('btn-text');
+const btnIcon = document.getElementById('btn-icon');
 const statusText = document.getElementById('status-text');
+const statusDot = document.getElementById('status-dot');
 const outputDiv = document.getElementById('output');
 const thinkingContainer = document.getElementById('thinking-container');
 const thinkingDiv = document.getElementById('thinking');
@@ -13,16 +16,51 @@ const thinkingDiv = document.getElementById('thinking');
 if (endpointInput) endpointInput.value = DEFAULT_API_URL;
 if (modelInput) modelInput.value = DEFAULT_MODEL;
 
+/**
+ * Live Typewriter Text Generation Engine
+ */
+async function typeText(targetElement, fullText, speedMs = 10) {
+    targetElement.innerHTML = "";
+
+    const cursor = document.createElement("span");
+    cursor.className = "typing-cursor";
+    targetElement.appendChild(cursor);
+
+    for (let i = 0; i < fullText.length; i++) {
+        cursor.insertAdjacentText("beforebegin", fullText[i]);
+        targetElement.scrollTop = targetElement.scrollHeight;
+
+        const char = fullText[i];
+        let delay = speedMs;
+        if (char === '.' || char === '?' || char === '!') delay = speedMs * 4;
+        else if (char === ',' || char === '\n') delay = speedMs * 2.5;
+
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 600));
+    cursor.remove();
+}
+
 generateBtn.addEventListener('click', async () => {
     const promptText = promptInput.value.trim();
     const apiUrl = endpointInput.value.trim() || DEFAULT_API_URL;
     const modelName = modelInput.value.trim() || DEFAULT_MODEL;
 
-    if (!promptText) return;
+    if (!promptText) {
+        alert("Please enter a prompt instruction.");
+        return;
+    }
 
+    // Lock UI state
     generateBtn.disabled = true;
-    statusText.innerText = "Processing...";
-    outputDiv.innerText = "";
+    btnText.innerText = "Generating...";
+    btnIcon.classList.add("spin-icon");
+
+    statusText.innerText = "Connecting...";
+    statusDot.className = "status-dot active";
+
+    outputDiv.innerHTML = `<span class="placeholder-text">Awaiting response from local gateway...</span>`;
     thinkingDiv.innerText = "";
     thinkingContainer.style.display = "none";
 
@@ -31,7 +69,6 @@ generateBtn.addEventListener('click', async () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                // Essential header to bypass Ngrok's HTML warning page when shared publicly
                 "ngrok-skip-browser-warning": "true"
             },
             body: JSON.stringify({
@@ -40,18 +77,24 @@ generateBtn.addEventListener('click', async () => {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            throw new Error(errorData?.error?.message || errorData?.detail || `HTTP Error ${response.status}`);
+        // Safe response reading for non-JSON error pages (e.g. 502 Bad Gateway)
+        const responseText = await response.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            throw new Error(`Server returned non-JSON response (${response.status}): ${responseText.slice(0, 150)}`);
         }
 
-        const data = await response.json();
-        const messageObj = data.choices?.[0]?.message || {};
+        if (!response.ok) {
+            throw new Error(data.detail || data.error?.message || `HTTP ${response.status} Error`);
+        }
 
+        const messageObj = data.choices?.[0]?.message || {};
         let rawContent = messageObj.content || "";
         let thinkingText = messageObj.reasoning_content || "";
 
-        // Fallback parser for <think> tags if model embeds reasoning directly in content
+        // Fallback for tags like <think> reasoning
         if (!thinkingText) {
             const thinkMatch = rawContent.match(/<(think|thought)>([\s\S]*?)<\/\1>/i);
             if (thinkMatch) {
@@ -65,13 +108,21 @@ generateBtn.addEventListener('click', async () => {
             thinkingContainer.style.display = "block";
         }
 
-        outputDiv.innerText = rawContent;
+        // Trigger Live Generation Typewriter Animation
+        statusText.innerText = "Streaming Output...";
+        await typeText(outputDiv, rawContent, 12);
+
         statusText.innerText = "Completed";
+        statusDot.className = "status-dot completed";
+
     } catch (error) {
         statusText.innerText = "Error";
-        outputDiv.innerText = `Request Failed: ${error.message}`;
-        console.error("API Request Failed:", error);
+        statusDot.className = "status-dot error";
+        outputDiv.innerHTML = `<div class="error-box"><strong>Error:</strong> ${error.message}</div>`;
+        console.error("API Error:", error);
     } finally {
         generateBtn.disabled = false;
+        btnText.innerText = "Generate Response";
+        btnIcon.classList.remove("spin-icon");
     }
 });
