@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = "http://localhost:8000/v1/chat/completions";
+const API_URL = "https://unsedimental-kayleen-nonpatriotically.ngrok-free.dev/v1/chat/completions";
 const DEFAULT_MODEL = "qwen2.5:0.5b";
 
 const endpointInput = document.getElementById('api-url');
