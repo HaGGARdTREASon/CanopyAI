@@ -7,37 +7,43 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Qwen 2.5 AI Assistant</h1>
-        <p class="subtitle">Powered by Local Ollama Gateway (qwen2.5:0.5b)</p>
+    <!-- Ambient Background Blobs for 3D Depth -->
+    <div class="clay-blob blob-1"></div>
+    <div class="clay-blob blob-2"></div>
 
-        <div class="input-group">
-            <label for="api-url">API Endpoint URL:</label>
-            <input type="text" id="api-url" placeholder="http://localhost:8000/v1/chat/completions" />
+    <div class="container clay-card">
+        <div class="header">
+            <h1>Qwen 2.5 AI Assistant</h1>
+            <p class="subtitle">Local Ollama Gateway • Claymorphic Edition</p>
         </div>
 
         <div class="input-group">
-            <label for="model-name">Model Name:</label>
-            <input type="text" id="model-name" placeholder="qwen2.5:0.5b" />
+            <label for="api-url">API Endpoint URL</label>
+            <input type="text" id="api-url" class="clay-input" placeholder="http://localhost:8000/v1/chat/completions" />
         </div>
 
         <div class="input-group">
-            <label for="prompt">Prompt:</label>
-            <textarea id="prompt" rows="4" placeholder="Type a message or question..."></textarea>
+            <label for="model-name">Model Name</label>
+            <input type="text" id="model-name" class="clay-input" placeholder="qwen2.5:0.5b" />
         </div>
 
-        <button id="generate-btn">Generate Response</button>
+        <div class="input-group">
+            <label for="prompt">Prompt</label>
+            <textarea id="prompt" class="clay-input clay-textarea" rows="4" placeholder="Ask Qwen 2.5 anything..."></textarea>
+        </div>
+
+        <button id="generate-btn" class="clay-btn">Generate Response</button>
 
         <div class="output-group">
-            <label>Status / Response:</label>
-            <div id="status" class="status-box">Ready.</div>
+            <label>Status / Response</label>
+            <div id="status" class="status-badge">Ready.</div>
 
-            <details id="thinking-container" class="thinking-box" style="display: none;" open>
+            <details id="thinking-container" class="thinking-box clay-inset" style="display: none;" open>
                 <summary>🧠 Thinking Process</summary>
                 <div id="thinking" class="thinking-content"></div>
             </details>
 
-            <div id="output" class="output-box"></div>
+            <div id="output" class="output-box clay-inset"></div>
         </div>
     </div>
 

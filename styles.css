@@ -1,155 +1,193 @@
+/* Base Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #1a1e2b;
-    color: #e2e8f0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: #1e2230;
+    color: #f1f5f9;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 2rem;
-    margin: 0;
-    box-sizing: border-box;
+    position: relative;
+    overflow-x: hidden;
 }
 
-/* Claymorphic Main Container */
-.container {
+/* 1. Ambient Background Blobs (Enhances Clay Depth) */
+.clay-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 0;
+    opacity: 0.5;
+}
+
+.blob-1 {
+    width: 300px;
+    height: 300px;
+    background: #0284c7;
+    top: 8%;
+    left: 12%;
+}
+
+.blob-2 {
+    width: 350px;
+    height: 350px;
+    background: #7c3aed;
+    bottom: 8%;
+    right: 12%;
+}
+
+/* 2. Main Claymorphic Floating Card */
+.clay-card {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 650px;
-    background: #232838;
+    max-width: 640px;
+    background: #252b3b;
     padding: 2.5rem;
-    border-radius: 30px;
-    box-shadow: 16px 16px 32px #12151f, -16px -16px 32px #343b51, inset 6px 6px 12px rgba(255, 255, 255, 0.08), inset -6px -6px 12px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    border-radius: 35px;
+    box-shadow: 20px 20px 40px #141722, -20px -20px 40px #363f54, inset 8px 8px 16px rgba(255, 255, 255, 0.08), inset -8px -8px 16px rgba(0, 0, 0, 0.45);
 }
 
-h1 {
-    margin-top: 0;
+.header h1 {
     color: #38bdf8;
-    font-size: 1.8rem;
+    font-size: 1.85rem;
+    font-weight: 800;
     letter-spacing: -0.5px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .subtitle {
     color: #94a3b8;
+    font-size: 0.92rem;
     margin-bottom: 1.8rem;
-    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .input-group, .output-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.4rem;
 }
 
 label {
     display: block;
-    font-weight: 600;
-    margin-bottom: 0.6rem;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 0.9rem;
     color: #cbd5e1;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.3px;
 }
 
-/* Claymorphic Inset Input Fields */
-input[type="text"], textarea {
+/* 3. Inset Clay Inputs */
+.clay-input {
     width: 100%;
-    box-sizing: border-box;
-    background-color: #1a1e2b;
+    background-color: #1b202e;
     border: none;
     color: #f8fafc;
-    padding: 0.9rem 1.1rem;
-    border-radius: 18px;
+    padding: 0.95rem 1.2rem;
+    border-radius: 20px;
     font-size: 0.95rem;
     outline: none;
-    box-shadow: inset 5px 5px 10px #11141d, inset -5px -5px 10px #232839, 0px 2px 4px rgba(0, 0, 0, 0.2);
-    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+    font-family: inherit;
+    box-shadow: inset 6px 6px 12px #10131c, inset -6px -6px 12px #262d40;
+    transition: all 0.2s ease;
 }
 
-    input[type="text"]:focus, textarea:focus {
-        background-color: #181c28;
-        box-shadow: inset 6px 6px 12px #0f1118, inset -6px -6px 12px #212738, 0 0 0 2px rgba(56, 189, 248, 0.4);
+    .clay-input:focus {
+        box-shadow: inset 8px 8px 14px #0c0e15, inset -8px -8px 14px #2a3247, 0 0 0 2px rgba(56, 189, 248, 0.4);
     }
 
-textarea {
+.clay-textarea {
     resize: vertical;
+    min-height: 100px;
 }
 
-/* Claymorphic Tactile 3D Button */
-button {
+/* 4. Claymorphic Tactile Button */
+.clay-btn {
     width: 100%;
-    background: #0284c7;
-    color: white;
+    background: linear-gradient(145deg, #0284c7, #0369a1);
+    color: #ffffff;
     border: none;
-    padding: 1rem;
+    padding: 1.1rem;
     font-size: 1.05rem;
     font-weight: 700;
-    border-radius: 20px;
+    border-radius: 25px;
     cursor: pointer;
-    box-shadow: 8px 8px 16px #12151f, -8px -8px 16px #343b51, inset 3px 3px 6px rgba(255, 255, 255, 0.35), inset -3px -3px 6px rgba(0, 0, 0, 0.4);
-    transition: all 0.15s ease;
+    box-shadow: 10px 10px 20px #141722, -10px -10px 20px #363f54, inset 4px 4px 8px rgba(255, 255, 255, 0.4), inset -4px -4px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin-top: 0.5rem;
 }
 
-    button:hover {
-        background: #0369a1;
-        box-shadow: 10px 10px 20px #10121b, -10px -10px 20px #363e55, inset 4px 4px 8px rgba(255, 255, 255, 0.4), inset -4px -4px 8px rgba(0, 0, 0, 0.4);
-        transform: translateY(-2px);
+    .clay-btn:hover {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 14px 14px 25px #12151f, -14px -14px 25px #384259, inset 5px 5px 10px rgba(255, 255, 255, 0.5), inset -5px -5px 10px rgba(0, 0, 0, 0.5);
     }
 
-    button:active {
-        transform: translateY(2px);
-        box-shadow: inset 4px 4px 8px #01446b, inset -4px -4px 8px #058ed8;
+    .clay-btn:active {
+        transform: translateY(2px) scale(0.99);
+        box-shadow: inset 6px 6px 12px #01446b, inset -6px -6px 12px #058ed8;
     }
 
-    button:disabled {
+    .clay-btn:disabled {
         background: #475569;
-        box-shadow: inset 3px 3px 6px #334155, inset -3px -3px 6px #52657d;
+        box-shadow: inset 4px 4px 8px #334155, inset -4px -4px 8px #52657d;
         cursor: not-allowed;
         transform: none;
     }
 
-.status-box {
-    font-size: 0.9rem;
+/* 5. Inset Clay Display Cards */
+.status-badge {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #38bdf8;
+    padding: 0.4rem 1rem;
+    border-radius: 15px;
     margin-bottom: 0.8rem;
-    font-weight: 500;
+    background: #1b202e;
+    box-shadow: inset 3px 3px 6px #10131c, inset -3px -3px 6px #262d40;
 }
 
-/* Claymorphic Inset Container for Thinking Content */
+.clay-inset {
+    background-color: #1b202e;
+    border-radius: 22px;
+    padding: 1.2rem;
+    box-shadow: inset 6px 6px 12px #10131c, inset -6px -6px 12px #262d40;
+}
+
 .thinking-box {
-    background-color: #1a1e2b;
-    border-radius: 18px;
-    padding: 0.9rem 1.2rem;
     margin-bottom: 1.2rem;
-    box-shadow: inset 4px 4px 8px #11141d, inset -4px -4px 8px #232839;
 }
 
     .thinking-box summary {
         cursor: pointer;
-        font-weight: 600;
+        font-weight: 700;
         color: #38bdf8;
         font-size: 0.9rem;
         user-select: none;
     }
 
 .thinking-content {
-    margin-top: 0.75rem;
+    margin-top: 0.8rem;
     color: #94a3b8;
     font-size: 0.88rem;
     white-space: pre-wrap;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    line-height: 1.45;
-    max-height: 250px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    line-height: 1.5;
+    max-height: 220px;
     overflow-y: auto;
 }
 
-/* Claymorphic Inset Output Box */
 .output-box {
-    background-color: #1a1e2b;
-    border-radius: 20px;
-    padding: 1.2rem;
-    min-height: 90px;
+    min-height: 100px;
     white-space: pre-wrap;
     color: #f1f5f9;
-    line-height: 1.5;
-    box-shadow: inset 5px 5px 10px #11141d, inset -5px -5px 10px #232839;
+    line-height: 1.6;
+    font-size: 0.98rem;
 }
-1
