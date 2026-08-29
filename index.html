@@ -1,103 +1,359 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qwen 2.5 Claymorphic Studio</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-    <!-- Floating Background Pastel Orbs -->
-    <div class="background-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
+:root {
+    --font-main: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    
+    /* Strict Light Mode Palette */
+    --bg-light: #eef2f7;
+    --clay-card-bg: #e6edf5;
+    --clay-inset-bg-actual: #d9e3f0;
+    
+    --accent-blue: #0284c7;
+    --accent-indigo: #4f46e5;
+    --accent-green: #10b981;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    /* Light Claymorphism Outer Raised 3D Shadows */
+    --clay-outer-shadow: 16px 16px 32px #c0c8d4, -16px -16px 32px #ffffff;
+    --clay-inner-light: inset 5px 5px 10px rgba(255, 255, 255, 0.9);
+    --clay-inner-dark: inset -5px -5px 10px rgba(166, 180, 200, 0.65);
+    
+    /* Light Claymorphism Inset Shadows */
+    --inset-shadow: inset 6px 6px 12px #c2cad6, inset -6px -6px 12px #ffffff;
+}
 
-    <!-- Main Light Clay Container -->
-    <main class="clay-card">
-        <!-- Header -->
-        <header class="card-header">
-            <div class="brand">
-                <div class="logo-icon">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2a8 8 0 0 0-8 8c0 1.5.4 2.9 1.2 4.1L3 21l6.9-2.2c1.2.8 2.6 1.2 4.1 1.2a8 8 0 0 0 8-8 8 8 0 0 0-8-8z"/>
-                        <circle cx="12" cy="10" r="1"/>
-                        <circle cx="8" cy="10" r="1"/>
-                        <circle cx="16" cy="10" r="1"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1>Qwen 2.5 Studio</h1>
-                    <p class="subtitle">Local Ollama Gateway • Public Ngrok Ready</p>
-                </div>
-            </div>
-            <span class="version-badge">v0.5B</span>
-        </header>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        <!-- Config Grid -->
-        <div class="config-grid">
-            <div class="input-group">
-                <label for="api-url">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    API Endpoint
-                </label>
-                <input type="text" id="api-url" class="clay-input" placeholder="http://localhost:8000/v1/chat/completions" />
-            </div>
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1.5rem;
+    position: relative;
+    overflow-x: hidden;
+}
 
-            <div class="input-group">
-                <label for="model-name">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></svg>
-                    Model
-                </label>
-                <input type="text" id="model-name" class="clay-input" placeholder="qwen2.5:0.5b" />
-            </div>
-        </div>
+/* Ambient Background Pastel Orbs */
+.background-orbs {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
 
-        <!-- Prompt Input -->
-        <div class="input-group">
-            <label for="prompt">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Prompt Instruction
-            </label>
-            <textarea id="prompt" class="clay-input clay-textarea" rows="4" placeholder="Enter instructions or questions for Qwen 2.5..."></textarea>
-        </div>
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    animation: float 12s infinite alternate ease-in-out;
+}
 
-        <!-- Action Button -->
-        <button id="generate-btn" class="clay-btn">
-            <span class="btn-text">Generate Response</span>
-            <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
+.orb-1 { width: 380px; height: 380px; background: #38bdf8; top: -60px; left: 10%; }
+.orb-2 { width: 420px; height: 420px; background: #818cf8; bottom: -70px; right: 10%; animation-delay: -5s; }
+.orb-3 { width: 250px; height: 250px; background: #a5f3fc; top: 40%; right: 30%; animation-delay: -8s; }
 
-        <!-- Output Display Section -->
-        <section class="output-group">
-            <div class="status-header">
-                <label>Assistant Output</label>
-                <div id="status" class="status-pill">
-                    <span class="status-dot"></span>
-                    <span id="status-text">Ready</span>
-                </div>
-            </div>
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 40px) scale(1.08); }
+}
 
-            <details id="thinking-container" class="thinking-box clay-inset" style="display: none;" open>
-                <summary>
-                    <span class="summary-title">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.04z"/></svg>
-                        Reasoning Process
-                    </span>
-                    <span class="chevron">▼</span>
-                </summary>
-                <div id="thinking" class="thinking-content"></div>
-            </details>
+/* Main Raised Clay Card */
+.clay-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+    background: var(--clay-card-bg);
+    padding: 2.25rem;
+    border-radius: 36px;
+    box-shadow: var(--clay-outer-shadow), var(--clay-inner-light), var(--clay-inner-dark);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
 
-            <div id="output" class="output-box clay-inset">Awaiting your prompt above...</div>
-        </section>
-    </main>
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+}
 
-    <script type="module" src="script.js"></script>
-</body>
-</html>
+.brand { display: flex; align-items: center; gap: 1rem; }
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 4px 6px 12px rgba(2, 132, 199, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+h1 { 
+    font-size: 1.45rem; 
+    font-weight: 800; 
+    letter-spacing: -0.02em; 
+    color: var(--text-primary);
+}
+
+.subtitle { 
+    font-size: 0.82rem; 
+    color: var(--text-secondary); 
+    font-weight: 600; 
+}
+
+.version-badge {
+    background: var(--clay-inset-bg-actual);
+    color: var(--accent-indigo);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    box-shadow: var(--inset-shadow);
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+}
+
+@media (max-width: 580px) {
+    .config-grid { grid-template-columns: 1fr; }
+}
+
+.input-group { margin-bottom: 1.2rem; }
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+label svg { color: var(--accent-blue); }
+
+.clay-input {
+    width: 100%;
+    background-color: var(--clay-inset-bg-actual);
+    border: none;
+    color: var(--text-primary);
+    padding: 0.9rem 1.1rem;
+    border-radius: 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    font-family: inherit;
+    outline: none;
+    box-shadow: var(--inset-shadow);
+    transition: all 0.2s ease;
+}
+
+.clay-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.clay-input:focus {
+    box-shadow: inset 8px 8px 14px #b8c2d1, inset -8px -8px 14px #ffffff, 0 0 0 2px rgba(2, 132, 199, 0.4);
+}
+
+.clay-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+/* 3D Tactile Light Mode Button */
+.clay-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #0284c7, #4f46e5);
+    color: #ffffff;
+    border: none;
+    padding: 1.05rem;
+    font-size: 0.98rem;
+    font-weight: 700;
+    font-family: inherit;
+    border-radius: 22px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 
+        8px 8px 18px #b8c2d0,
+        -8px -8px 18px #ffffff,
+        inset 3px 3px 6px rgba(255, 255, 255, 0.5),
+        inset -3px -3px 6px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-top: 0.4rem;
+}
+
+.clay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        12px 12px 22px #afb9c7,
+        -12px -12px 22px #ffffff,
+        inset 4px 4px 8px rgba(255, 255, 255, 0.6),
+        inset -4px -4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.clay-btn:active {
+    transform: translateY(2px);
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.clay-btn:disabled {
+    background: #cbd5e1;
+    box-shadow: var(--inset-shadow);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spin-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* Output Display Areas */
+.output-group { margin-top: 1.6rem; }
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--clay-inset-bg-actual);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    box-shadow: var(--inset-shadow);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-blue);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+/* Pulsing dot animation when generating */
+.status-dot.active {
+    background-color: var(--accent-indigo);
+    animation: pulse-ring 1.2s infinite ease-out;
+}
+
+@keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+}
+
+.clay-inset {
+    background-color: var(--clay-inset-bg-actual);
+    border-radius: 22px;
+    padding: 1.2rem;
+    box-shadow: var(--inset-shadow);
+}
+
+.thinking-box { margin-bottom: 1rem; }
+
+.thinking-box summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--accent-indigo);
+    font-size: 0.85rem;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
+.thinking-box summary::-webkit-details-marker { display: none; }
+.summary-title { display: flex; align-items: center; gap: 0.4rem; }
+
+.chevron { font-size: 0.7rem; transition: transform 0.2s ease; }
+details[open] .chevron { transform: rotate(180deg); }
+
+.thinking-content {
+    margin-top: 0.8rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    font-family: ui-monospace, Consolas, monospace;
+    line-height: 1.5;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.output-box {
+    min-height: 110px;
+    white-space: pre-wrap;
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.placeholder-text {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Live Typing Cursor Animation */
+.typing-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1.15em;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+    margin-left: 4px;
+    vertical-align: -2px;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
+    animation: blink-cursor 0.75s infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.2; transform: scaleY(0.85); }
+}
+
+/* Light Scrollbar */
+.thinking-content::-webkit-scrollbar,
+.output-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.thinking-content::-webkit-scrollbar-thumb,
+.output-box::-webkit-scrollbar-thumb {
+    background: #c0c8d4;
+    border-radius: 10px;
+}
