@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse  # Import FileResponse
 import requests
 import uvicorn
 
@@ -14,6 +15,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Route to serve the webpage to external users
+@app.get("/")
+async def serve_ui():
+    return FileResponse("index.html")
 
 @app.post("/v1/chat/completions")
 async def chat_proxy_post(request: Request):
