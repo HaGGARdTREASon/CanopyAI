@@ -7,6 +7,7 @@ OLLAMA_ENDPOINT = "http://127.0.0.1:11434/v1/chat/completions"
 
 app = FastAPI(title="Qwen 2.5 Local Gateway")
 
+# Enable CORS for local & public clients
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,6 +22,7 @@ async def chat_proxy_post(request: Request):
         body = await request.json()
         model = body.get("model", "qwen2.5:0.5b")
 
+        # Format input payload to standard OpenAI format
         if "prompt" in body and "messages" not in body:
             payload = {
                 "model": model,
@@ -31,6 +33,7 @@ async def chat_proxy_post(request: Request):
             if "model" not in payload or not payload["model"]:
                 payload["model"] = "qwen2.5:0.5b"
 
+        # Forward request to local Ollama service
         response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=300)
         
         if response.status_code != 200:
