@@ -4,11 +4,11 @@
     /* Strict Light Mode Palette */
     --bg-light: #eef2f7;
     --clay-card-bg: #e6edf5;
-    --clay-inset-bg: #dbf0;
     --clay-inset-bg-actual: #d9e3f0;
     
     --accent-blue: #0284c7;
     --accent-indigo: #4f46e5;
+    --accent-green: #10b981;
     
     --text-primary: #0f172a;
     --text-secondary: #475569;
@@ -152,7 +152,6 @@ label {
 
 label svg { color: var(--accent-blue); }
 
-/* Inset Clay Inputs (Light Mode) */
 .clay-input {
     width: 100%;
     background-color: var(--clay-inset-bg-actual);
@@ -226,6 +225,14 @@ label svg { color: var(--accent-blue); }
     transform: none;
 }
 
+.spin-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
 /* Output Display Areas */
 .output-group { margin-top: 1.6rem; }
 
@@ -254,7 +261,19 @@ label svg { color: var(--accent-blue); }
     height: 8px;
     background-color: var(--accent-blue);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--accent-blue);
+    transition: all 0.3s ease;
+}
+
+/* Pulsing dot animation when generating */
+.status-dot.active {
+    background-color: var(--accent-indigo);
+    animation: pulse-ring 1.2s infinite ease-out;
+}
+
+@keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
 }
 
 .clay-inset {
@@ -302,6 +321,29 @@ details[open] .chevron { transform: rotate(180deg); }
     line-height: 1.6;
     font-size: 0.95rem;
     font-weight: 500;
+}
+
+.placeholder-text {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Live Typing Cursor Animation */
+.typing-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 1.15em;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+    margin-left: 4px;
+    vertical-align: -2px;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
+    animation: blink-cursor 0.75s infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.2; transform: scaleY(0.85); }
 }
 
 /* Light Scrollbar */
